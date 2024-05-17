@@ -3,6 +3,7 @@ package com.samkt.projectmanagement.ui.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,15 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.samkt.projectmanagement.R;
 import com.samkt.projectmanagement.data.model.response.Project;
+import com.samkt.projectmanagement.ui.adapters.listeners.ProjectsListeners;
 
 import java.util.List;
 
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectViewHolder>{
 
     List<Project> projects;
+    ProjectsListeners listener;
 
-    public ProjectAdapter(List<Project> projects){
+    public ProjectAdapter(List<Project> projects,ProjectsListeners listener){
         this.projects = projects;
+        this.listener = listener;
     }
 
 
@@ -33,6 +37,14 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
     public void onBindViewHolder(@NonNull ProjectViewHolder holder, int position) {
         Project project = projects.get(position);
         holder.tvProjectName.setText(project.getName());
+        holder.deleteIcon.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onDeleteClicked(project.getUuid());
+                    }
+                }
+        );
     }
 
     @Override
@@ -42,9 +54,11 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
 
     public static class ProjectViewHolder extends RecyclerView.ViewHolder{
         TextView tvProjectName;
+        ImageView deleteIcon;
         public ProjectViewHolder(@NonNull View itemView) {
             super(itemView);
             tvProjectName = itemView.findViewById(R.id.tvProjectName);
+            deleteIcon = itemView.findViewById(R.id.icDelete);
         }
     }
 }

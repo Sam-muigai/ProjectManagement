@@ -26,13 +26,14 @@ import com.samkt.projectmanagement.data.preferences.ProjectPreferences;
 import com.samkt.projectmanagement.data.repository.ProjectRepository;
 import com.samkt.projectmanagement.databinding.FragmentHomeBinding;
 import com.samkt.projectmanagement.ui.adapters.ProjectAdapter;
+import com.samkt.projectmanagement.ui.adapters.listeners.ProjectsListeners;
 import com.samkt.projectmanagement.ui.viewModels.HomeViewModel;
 import com.samkt.projectmanagement.ui.viewModels.factory.HomeViewModelFactory;
 
 import java.util.List;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements ProjectsListeners {
 
     private FragmentHomeBinding binding;
     private BottomSheetDialog dialog;
@@ -147,7 +148,7 @@ public class HomeFragment extends Fragment {
         homeViewModel.getProjects().observe(
                 getViewLifecycleOwner(),info ->{
                     if (info.getErrorMessage() != null){
-                        showError();
+                        showError(info.getErrorMessage());
                         return;
                     }
                     if (info.getProjects() != null){
@@ -158,11 +159,30 @@ public class HomeFragment extends Fragment {
     }
 
     private void displayProjects(List<Project> projects) {
-        ProjectAdapter projectAdapter = new ProjectAdapter(projects);
+        ProjectAdapter projectAdapter = new ProjectAdapter(projects,this);
         binding.rvProjects.setAdapter(projectAdapter);
     }
 
-    private void showError() {
+    private void showError(String message) {
+        Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void onEditClicked(String id) {
+
+    }
+
+    @Override
+    public void onDeleteClicked(String id) {
+        homeViewModel.deleteResult(id).observe(getViewLifecycleOwner(),deleteResult -> {
+            if (deleteResult.getErrorMessage() != null){
+                showError(deleteResult.getErrorMessage());
+                return;
+            }
+            if (deleteResult.getSuccessMessage() != null){
+                Toast.makeText(requireContext(),deleteResult.getSuccessMessage(),Toast.LENGTH_LONG).show();
+                getProjects();
+            }
+        });
     }
 }

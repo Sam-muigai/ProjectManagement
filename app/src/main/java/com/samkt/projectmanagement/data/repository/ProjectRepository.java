@@ -7,8 +7,10 @@ import com.samkt.projectmanagement.data.ProjectApiService;
 import com.samkt.projectmanagement.data.model.request.CreateProjectRequest;
 import com.samkt.projectmanagement.data.model.response.AllProjectsResponse;
 import com.samkt.projectmanagement.data.model.response.CreateProjectResponse;
+import com.samkt.projectmanagement.data.model.response.DeleteProjectResponse;
 import com.samkt.projectmanagement.data.model.response.Project;
 import com.samkt.projectmanagement.models.AllProjects;
+import com.samkt.projectmanagement.models.DeleteResult;
 import com.samkt.projectmanagement.models.PostResult;
 
 import java.util.List;
@@ -71,5 +73,29 @@ public class ProjectRepository {
             }
         });
         return getAllProjectResult;
+    }
+
+    public MutableLiveData<DeleteResult> deleteProject(String id){
+        MutableLiveData<DeleteResult> deleteProjectResult = new MutableLiveData<>();
+        apiService.deleteProject(id).enqueue(new Callback<DeleteProjectResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<DeleteProjectResponse> call, @NonNull Response<DeleteProjectResponse> response) {
+                if (response.isSuccessful() && response.body() != null){
+                    DeleteProjectResponse deleteProjectResponse = response.body();
+                    deleteProjectResult.postValue(new DeleteResult(deleteProjectResponse.getMessage(),null));
+                }
+
+                if (!response.isSuccessful()){
+                    deleteProjectResult.postValue(new DeleteResult(null,response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<DeleteProjectResponse> call, @NonNull Throwable t) {
+                deleteProjectResult.postValue(new DeleteResult(null,t.getMessage()));
+            }
+        });
+
+        return deleteProjectResult;
     }
 }
