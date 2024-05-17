@@ -1,14 +1,15 @@
 package com.samkt.projectmanagement.ui;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.preference.PreferenceManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +18,11 @@ import android.widget.Toast;
 
 import com.samkt.projectmanagement.R;
 import com.samkt.projectmanagement.data.ApiServiceInstance;
-import com.samkt.projectmanagement.data.model.response.SignUpResponse;
+import com.samkt.projectmanagement.data.preferences.ProjectPreferences;
 import com.samkt.projectmanagement.data.repository.AuthRepository;
 import com.samkt.projectmanagement.databinding.FragmentSignUpBinding;
 import com.samkt.projectmanagement.ui.viewModels.SignUpViewModel;
 import com.samkt.projectmanagement.ui.viewModels.factory.SignUpViewModelFactory;
-import com.samkt.projectmanagement.utils.Result;
 
 import java.util.Objects;
 
@@ -39,7 +39,10 @@ public class SignUpFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SignUpViewModelFactory signUpViewModelFactory = new SignUpViewModelFactory(new AuthRepository(ApiServiceInstance.getApiServices()));
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        ProjectPreferences projectPreferences = new ProjectPreferences(preferences);
+        AuthRepository authRepository = new AuthRepository(ApiServiceInstance.getApiServices(),projectPreferences);
+        SignUpViewModelFactory signUpViewModelFactory = new SignUpViewModelFactory(authRepository);
         signUpViewModel = new ViewModelProvider(this, signUpViewModelFactory).get(SignUpViewModel.class);
     }
 

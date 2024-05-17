@@ -8,6 +8,7 @@ import com.samkt.projectmanagement.data.model.request.SignInRequest;
 import com.samkt.projectmanagement.data.model.request.SignUpRequest;
 import com.samkt.projectmanagement.data.model.response.SignInResponse;
 import com.samkt.projectmanagement.data.model.response.SignUpResponse;
+import com.samkt.projectmanagement.data.preferences.ProjectPreferences;
 import com.samkt.projectmanagement.models.SignInInfo;
 import com.samkt.projectmanagement.models.SignUpInfo;
 
@@ -18,9 +19,11 @@ import timber.log.Timber;
 
 public class AuthRepository {
     private final ProjectApiService apiService;
+    private final ProjectPreferences preferences;
 
-    public AuthRepository(ProjectApiService apiService) {
+    public AuthRepository(ProjectApiService apiService, ProjectPreferences preferences) {
         this.apiService = apiService;
+        this.preferences = preferences;
     }
 
 
@@ -60,9 +63,10 @@ public class AuthRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     Timber.d("SignUser repository: Success");
                     SignInResponse signInResponse = response.body();
+                    String userToken = signInResponse.getData().getAccessToken();
+                    preferences.saveUserToken(userToken);
                     signInResult.setValue(new SignInInfo(signInResponse.getMessage(), null));
                 }
-
                 if (!response.isSuccessful()) {
                     Timber.d("SignUser repository: %s", response.message());
                     signInResult.setValue(new SignInInfo(null, response.message()));

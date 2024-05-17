@@ -1,5 +1,6 @@
 package com.samkt.projectmanagement.ui;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.preference.PreferenceManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import com.samkt.projectmanagement.R;
 import com.samkt.projectmanagement.data.ApiServiceInstance;
+import com.samkt.projectmanagement.data.preferences.ProjectPreferences;
 import com.samkt.projectmanagement.data.repository.AuthRepository;
 import com.samkt.projectmanagement.databinding.FragmentSignInBinding;
 import com.samkt.projectmanagement.ui.viewModels.SignInViewModel;
@@ -34,7 +37,10 @@ public class SignInFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SignInViewModelFactory signInViewModelFactory = new SignInViewModelFactory(new AuthRepository(ApiServiceInstance.getApiServices()));
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        ProjectPreferences projectPreferences = new ProjectPreferences(preferences);
+        AuthRepository authRepository = new AuthRepository(ApiServiceInstance.getApiServices(),projectPreferences);
+        SignInViewModelFactory signInViewModelFactory = new SignInViewModelFactory(authRepository);
         signInViewModel = new ViewModelProvider(this,signInViewModelFactory).get(SignInViewModel.class);
     }
 
