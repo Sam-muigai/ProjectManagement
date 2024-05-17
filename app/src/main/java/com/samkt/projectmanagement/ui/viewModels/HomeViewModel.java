@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.samkt.projectmanagement.data.model.request.CreateProjectRequest;
 import com.samkt.projectmanagement.data.repository.ProjectRepository;
+import com.samkt.projectmanagement.models.AllProjects;
 import com.samkt.projectmanagement.models.PostResult;
 
 public class HomeViewModel extends ViewModel {
@@ -23,5 +24,7 @@ public class HomeViewModel extends ViewModel {
         return repository.saveProject(createProjectRequest);
     }
 
-
+    public LiveData<AllProjects> getProjects(){
+        return repository.getAllProject();
+    }
 }
