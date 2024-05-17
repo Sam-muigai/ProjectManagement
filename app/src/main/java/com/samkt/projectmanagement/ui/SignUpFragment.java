@@ -84,8 +84,6 @@ public class SignUpFragment extends Fragment {
                     }
                 }
         );
-
-
     }
 
     private void signUpUser(

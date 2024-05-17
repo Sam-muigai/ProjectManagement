@@ -69,6 +69,17 @@ public class SignInFragment extends Fragment {
                 signInUser(emailOrPassword,password);
             }
         });
+
+        binding.tvSignUp.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        NavHostFragment.findNavController(SignInFragment.this).navigate(
+                                R.id.action_signInFragment_to_signUpFragment
+                        );
+                    }
+                }
+        );
     }
 
 
