@@ -9,9 +9,11 @@ import com.samkt.projectmanagement.data.model.response.AllProjectsResponse;
 import com.samkt.projectmanagement.data.model.response.CreateProjectResponse;
 import com.samkt.projectmanagement.data.model.response.DeleteProjectResponse;
 import com.samkt.projectmanagement.data.model.response.Project;
+import com.samkt.projectmanagement.data.model.response.UpdateProjectResponse;
 import com.samkt.projectmanagement.models.AllProjects;
 import com.samkt.projectmanagement.models.DeleteResult;
 import com.samkt.projectmanagement.models.PostResult;
+import com.samkt.projectmanagement.models.UpdateResult;
 
 import java.util.List;
 
@@ -97,5 +99,31 @@ public class ProjectRepository {
         });
 
         return deleteProjectResult;
+    }
+
+
+    public MutableLiveData<UpdateResult> updateProject(String id,CreateProjectRequest createProjectRequest){
+        MutableLiveData<UpdateResult> updateResult = new MutableLiveData<>();
+        apiService.updateProject(id,createProjectRequest).enqueue(
+                new Callback<UpdateProjectResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<UpdateProjectResponse> call, @NonNull Response<UpdateProjectResponse> response) {
+                        if (response.isSuccessful() && response.body() != null){
+                            UpdateProjectResponse updateProjectResponse = response.body();
+                            updateResult.postValue(new UpdateResult(updateProjectResponse.getMessage(),null));
+                        }
+
+                        if (!response.isSuccessful()){
+                            updateResult.postValue(new UpdateResult(null,response.message()));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<UpdateProjectResponse> call, @NonNull Throwable t) {
+                        updateResult.postValue(new UpdateResult(null,t.getMessage()));
+                    }
+                }
+        );
+        return updateResult;
     }
 }

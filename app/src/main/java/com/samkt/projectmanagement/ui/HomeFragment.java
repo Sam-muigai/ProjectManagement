@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment implements ProjectsListeners {
             String name,
             String description
     ){
-        homeViewModel.saveTask(name, description).observe(getViewLifecycleOwner(),postResult -> {
+        homeViewModel.saveProject(name, description).observe(getViewLifecycleOwner(), postResult -> {
             if (postResult.getErrorMessage() != null) {
                 restoreHomeUiState();
                 Toast.makeText(requireContext(), postResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
@@ -168,13 +168,63 @@ public class HomeFragment extends Fragment implements ProjectsListeners {
     }
 
     @Override
-    public void onEditClicked(String id) {
+    public void onEditClicked(String id,String name,String description) {
+        showEditProjectDialog(id,name,description);
+    }
 
+    private void showEditProjectDialog(String id, String name, String description) {
+        dialog = new BottomSheetDialog(requireContext());
+        if (!dialog.isShowing()){
+            dialog.setContentView(R.layout.add_project_dialog);
+            btnSaveTask = dialog.findViewById(R.id.btnAddProject);
+            projectName = dialog.findViewById(R.id.etProjectName);
+            pbSavingProject = dialog.findViewById(R.id.pbSavingProject);
+            projectDescription = dialog.findViewById(R.id.etProjectDescription);
+
+            if (btnSaveTask != null && projectName != null && projectDescription != null && pbSavingProject != null){
+                projectName.setText(name);
+                projectDescription.setText(description);
+                btnSaveTask.setText("UPDATE PROJECT");
+                btnSaveTask.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (!isAllFieldFilled()){
+                                    Toast.makeText(requireContext(),"All fields must be filled",Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                                savingProject();
+                                String pjctName = projectName.getText().toString();
+                                String pjctDescription = projectDescription.getText().toString();
+                                updateProject(id,pjctName,pjctDescription);
+                            }
+                        }
+                );
+            }
+            dialog.show();
+        }
+    }
+
+    private void updateProject(String id, String name, String description){
+        homeViewModel.updateProject(id,name, description).observe(getViewLifecycleOwner(),postResult -> {
+            if (postResult.getErrorMessage() != null) {
+                restoreHomeUiState();
+                Toast.makeText(requireContext(), postResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (postResult.getSuccessMessage() != null){
+                if (dialog.isShowing()){
+                    dialog.dismiss();
+                }
+                Toast.makeText(requireContext(), postResult.getSuccessMessage(), Toast.LENGTH_SHORT).show();
+                getProjects();
+            }
+        });
     }
 
     @Override
     public void onDeleteClicked(String id) {
-        homeViewModel.deleteResult(id).observe(getViewLifecycleOwner(),deleteResult -> {
+        homeViewModel.deleteProject(id).observe(getViewLifecycleOwner(), deleteResult -> {
             if (deleteResult.getErrorMessage() != null){
                 showError(deleteResult.getErrorMessage());
                 return;

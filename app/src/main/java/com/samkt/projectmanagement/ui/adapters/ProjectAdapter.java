@@ -45,6 +45,15 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
                     }
                 }
         );
+
+        holder.editIcon.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                     listener.onEditClicked(project.getUuid(),project.getName(),project.getDescription());
+                    }
+                }
+        );
     }
 
     @Override
@@ -55,10 +64,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
     public static class ProjectViewHolder extends RecyclerView.ViewHolder{
         TextView tvProjectName;
         ImageView deleteIcon;
+        ImageView editIcon;
         public ProjectViewHolder(@NonNull View itemView) {
             super(itemView);
             tvProjectName = itemView.findViewById(R.id.tvProjectName);
             deleteIcon = itemView.findViewById(R.id.icDelete);
+            editIcon = itemView.findViewById(R.id.icEdit);
         }
     }
 }
