@@ -1,10 +1,10 @@
 package com.samkt.projectmanagement.models;
 
-public class SignInInfo {
+public class PostResult {
     private final String successMessage;
     private final String errorMessage;
 
-    public SignInInfo(String successMessage, String errorMessage) {
+    public PostResult(String successMessage, String errorMessage) {
         this.successMessage = successMessage;
         this.errorMessage = errorMessage;
     }

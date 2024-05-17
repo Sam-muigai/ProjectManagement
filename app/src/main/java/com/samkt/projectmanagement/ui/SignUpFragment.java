@@ -41,7 +41,8 @@ public class SignUpFragment extends Fragment {
         super.onCreate(savedInstanceState);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         ProjectPreferences projectPreferences = new ProjectPreferences(preferences);
-        AuthRepository authRepository = new AuthRepository(ApiServiceInstance.getApiServices(),projectPreferences);
+        ApiServiceInstance apiServiceInstance = new ApiServiceInstance(projectPreferences);
+        AuthRepository authRepository = new AuthRepository(apiServiceInstance.getApiServices(false),projectPreferences);
         SignUpViewModelFactory signUpViewModelFactory = new SignUpViewModelFactory(authRepository);
         signUpViewModel = new ViewModelProvider(this, signUpViewModelFactory).get(SignUpViewModel.class);
     }

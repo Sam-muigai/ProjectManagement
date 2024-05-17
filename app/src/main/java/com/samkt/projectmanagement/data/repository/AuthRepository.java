@@ -9,7 +9,7 @@ import com.samkt.projectmanagement.data.model.request.SignUpRequest;
 import com.samkt.projectmanagement.data.model.response.SignInResponse;
 import com.samkt.projectmanagement.data.model.response.SignUpResponse;
 import com.samkt.projectmanagement.data.preferences.ProjectPreferences;
-import com.samkt.projectmanagement.models.SignInInfo;
+import com.samkt.projectmanagement.models.PostResult;
 import com.samkt.projectmanagement.models.SignUpInfo;
 
 import retrofit2.Call;
@@ -54,8 +54,8 @@ public class AuthRepository {
         return signUpResult;
     }
 
-    public MutableLiveData<SignInInfo> signInUser(SignInRequest signInRequest) {
-        MutableLiveData<SignInInfo> signInResult = new MutableLiveData<>();
+    public MutableLiveData<PostResult> signInUser(SignInRequest signInRequest) {
+        MutableLiveData<PostResult> signInResult = new MutableLiveData<>();
         Timber.d("SignUser repository");
         apiService.signInUser(signInRequest).enqueue(new Callback<SignInResponse>() {
             @Override
@@ -65,18 +65,18 @@ public class AuthRepository {
                     SignInResponse signInResponse = response.body();
                     String userToken = signInResponse.getData().getAccessToken();
                     preferences.saveUserToken(userToken);
-                    signInResult.setValue(new SignInInfo(signInResponse.getMessage(), null));
+                    signInResult.setValue(new PostResult(signInResponse.getMessage(), null));
                 }
                 if (!response.isSuccessful()) {
                     Timber.d("SignUser repository: %s", response.message());
-                    signInResult.setValue(new SignInInfo(null, response.message()));
+                    signInResult.setValue(new PostResult(null, response.message()));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<SignInResponse> call, @NonNull Throwable t) {
                 Timber.d("SignUser repository: %s", t.getLocalizedMessage());
-                signInResult.setValue(new SignInInfo(null, t.getLocalizedMessage()));
+                signInResult.setValue(new PostResult(null, t.getLocalizedMessage()));
             }
         });
         return signInResult;

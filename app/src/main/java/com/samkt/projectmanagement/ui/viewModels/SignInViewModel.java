@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.samkt.projectmanagement.data.model.request.SignInRequest;
 import com.samkt.projectmanagement.data.repository.AuthRepository;
-import com.samkt.projectmanagement.models.SignInInfo;
+import com.samkt.projectmanagement.models.PostResult;
 
 public class SignInViewModel extends ViewModel {
     private final AuthRepository authRepository;
@@ -13,7 +13,7 @@ public class SignInViewModel extends ViewModel {
     public SignInViewModel(AuthRepository authRepository) {
         this.authRepository = authRepository;
     }
-    public LiveData<SignInInfo> signUpUser(
+    public LiveData<PostResult> signUpUser(
             String email,
             String password
     ) {

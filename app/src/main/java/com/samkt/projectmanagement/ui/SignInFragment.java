@@ -39,7 +39,8 @@ public class SignInFragment extends Fragment {
         super.onCreate(savedInstanceState);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         ProjectPreferences projectPreferences = new ProjectPreferences(preferences);
-        AuthRepository authRepository = new AuthRepository(ApiServiceInstance.getApiServices(),projectPreferences);
+        ApiServiceInstance apiServiceInstance = new ApiServiceInstance(projectPreferences);
+        AuthRepository authRepository = new AuthRepository(apiServiceInstance.getApiServices(false),projectPreferences);
         SignInViewModelFactory signInViewModelFactory = new SignInViewModelFactory(authRepository);
         signInViewModel = new ViewModelProvider(this,signInViewModelFactory).get(SignInViewModel.class);
     }

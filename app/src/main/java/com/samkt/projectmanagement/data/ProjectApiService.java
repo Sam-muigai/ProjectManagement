@@ -1,7 +1,9 @@
 package com.samkt.projectmanagement.data;
 
+import com.samkt.projectmanagement.data.model.request.CreateProjectRequest;
 import com.samkt.projectmanagement.data.model.request.SignInRequest;
 import com.samkt.projectmanagement.data.model.request.SignUpRequest;
+import com.samkt.projectmanagement.data.model.response.CreateProjectResponse;
 import com.samkt.projectmanagement.data.model.response.SignInResponse;
 import com.samkt.projectmanagement.data.model.response.SignUpResponse;
 
@@ -16,5 +18,8 @@ public interface ProjectApiService {
 
     @POST("login")
     Call<SignInResponse> signInUser(@Body SignInRequest signInRequest);
+
+    @POST("projects")
+    Call<CreateProjectResponse> createProject(@Body CreateProjectRequest createProjectRequest);
 
 }
