@@ -43,10 +43,10 @@
             android:layout_marginTop="40dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/userId"
+                android:id="@+id/etUsernameOrEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email"
+                android:hint="Email Or Username"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -66,13 +66,24 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/search_user"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginTop="32dp"
-            android:text="LOG IN"
-            app:cornerRadius="8dp"/>
+            android:gravity="center_horizontal">
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LOG IN"
+                app:cornerRadius="8dp"/>
+            <ProgressBar
+                android:id="@+id/pbLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

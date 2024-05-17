@@ -129,7 +129,7 @@ public class SignUpFragment extends Fragment {
 
     private void navigateToSignIn(){
         NavOptions navOptions = new NavOptions.Builder()
-                .setPopUpTo(R.id.signInFragment, true)
+                .setPopUpTo(R.id.signUpFragment, true)
                 .build();
         NavHostFragment.findNavController(this).navigate(
                 R.id.action_signUpFragment_to_signInFragment,

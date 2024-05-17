@@ -1,6 +1,8 @@
 package com.samkt.projectmanagement.data;
 
+import com.samkt.projectmanagement.data.model.request.SignInRequest;
 import com.samkt.projectmanagement.data.model.request.SignUpRequest;
+import com.samkt.projectmanagement.data.model.response.SignInResponse;
 import com.samkt.projectmanagement.data.model.response.SignUpResponse;
 
 import retrofit2.Call;
@@ -11,5 +13,8 @@ public interface ProjectApiService {
 
     @POST("register")
     Call<SignUpResponse> signUpUser(@Body SignUpRequest signUpRequest);
+
+    @POST("login")
+    Call<SignInResponse> signInUser(@Body SignInRequest signInRequest);
 
 }
