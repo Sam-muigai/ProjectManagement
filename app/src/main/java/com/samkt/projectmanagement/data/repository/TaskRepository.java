@@ -6,9 +6,11 @@ import androidx.lifecycle.MutableLiveData;
 import com.samkt.projectmanagement.data.ProjectApiService;
 import com.samkt.projectmanagement.data.model.request.CreateTaskRequest;
 import com.samkt.projectmanagement.data.model.response.CreateTaskResponse;
+import com.samkt.projectmanagement.data.model.response.DeleteResponse;
 import com.samkt.projectmanagement.data.model.response.Task;
 import com.samkt.projectmanagement.data.model.response.TasksResponse;
 import com.samkt.projectmanagement.models.AllTasks;
+import com.samkt.projectmanagement.models.DeleteResult;
 import com.samkt.projectmanagement.models.PostResult;
 
 import java.util.List;
@@ -70,6 +72,31 @@ public class TaskRepository {
             }
         });
         return getTasksResult;
+    }
+
+    public MutableLiveData<DeleteResult> deleteTask(String taskId){
+        MutableLiveData<DeleteResult> deleteTask = new MutableLiveData<>();
+
+        apiService.deleteTask(taskId).enqueue(new Callback<DeleteResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<DeleteResponse> call, @NonNull Response<DeleteResponse> response) {
+
+                if (response.isSuccessful() && response.body() != null){
+                    DeleteResponse deleteResponse = response.body();
+                    deleteTask.postValue(new DeleteResult(deleteResponse.getMessage(),null));
+                }
+
+                if (!response.isSuccessful()){
+                    deleteTask.postValue(new DeleteResult(null,response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<DeleteResponse> call, @NonNull Throwable t) {
+                deleteTask.postValue(new DeleteResult(null,t.getMessage()));
+            }
+        });
+        return deleteTask;
     }
 
 

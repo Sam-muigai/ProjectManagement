@@ -7,6 +7,7 @@ import com.samkt.projectmanagement.data.model.request.CreateTaskRequest;
 import com.samkt.projectmanagement.data.model.response.Task;
 import com.samkt.projectmanagement.data.repository.TaskRepository;
 import com.samkt.projectmanagement.models.AllTasks;
+import com.samkt.projectmanagement.models.DeleteResult;
 import com.samkt.projectmanagement.models.PostResult;
 
 import java.util.List;
@@ -34,6 +35,12 @@ public class TaskViewModel extends ViewModel {
             String projectId
     ){
         return repository.getTasks(projectId);
+    }
+
+    public LiveData<DeleteResult> deleteTask(
+        String taskId
+    ){
+        return repository.deleteTask(taskId);
     }
 
 

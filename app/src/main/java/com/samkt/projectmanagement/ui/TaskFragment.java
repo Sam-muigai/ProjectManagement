@@ -26,13 +26,14 @@ import com.samkt.projectmanagement.data.preferences.ProjectPreferences;
 import com.samkt.projectmanagement.data.repository.TaskRepository;
 import com.samkt.projectmanagement.databinding.FragmentTaskBinding;
 import com.samkt.projectmanagement.ui.adapters.TaskAdapter;
+import com.samkt.projectmanagement.ui.adapters.listeners.TaskListener;
 import com.samkt.projectmanagement.ui.viewModels.TaskViewModel;
 import com.samkt.projectmanagement.ui.viewModels.factory.TaskViewModelFactory;
 
 import java.util.List;
 
 
-public class TaskFragment extends Fragment {
+public class TaskFragment extends Fragment implements TaskListener {
 
     private FragmentTaskBinding binding;
     private String projectId, projectName, taskName, taskDeadline;
@@ -158,11 +159,25 @@ public class TaskFragment extends Fragment {
     void displayTasks(
             List<Task> tasks
     ){
-        TaskAdapter taskAdapter = new TaskAdapter(tasks);
+        TaskAdapter taskAdapter = new TaskAdapter(tasks,this);
         binding.rvTasks.setAdapter(taskAdapter);
     }
 
     private boolean isAllFieldFilled() {
         return !etTaskName.getText().toString().isEmpty() && !etTaskDeadline.getText().toString().isEmpty();
+    }
+
+    @Override
+    public void onDeleteClicked(String id) {
+        taskViewModel.deleteTask(id).observe(getViewLifecycleOwner(),deleteResult -> {
+            if (deleteResult.getErrorMessage() != null){
+                Toast.makeText(requireContext(),deleteResult.getErrorMessage(),Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (deleteResult.getSuccessMessage() != null){
+                Toast.makeText(requireContext(),deleteResult.getSuccessMessage(),Toast.LENGTH_SHORT).show();
+                getTasks();
+            }
+        });
     }
 }

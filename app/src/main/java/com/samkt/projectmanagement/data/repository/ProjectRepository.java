@@ -7,15 +7,12 @@ import com.samkt.projectmanagement.data.ProjectApiService;
 import com.samkt.projectmanagement.data.model.request.CreateProjectRequest;
 import com.samkt.projectmanagement.data.model.response.AllProjectsResponse;
 import com.samkt.projectmanagement.data.model.response.CreateProjectResponse;
-import com.samkt.projectmanagement.data.model.response.DeleteProjectResponse;
-import com.samkt.projectmanagement.data.model.response.Project;
+import com.samkt.projectmanagement.data.model.response.DeleteResponse;
 import com.samkt.projectmanagement.data.model.response.UpdateProjectResponse;
 import com.samkt.projectmanagement.models.AllProjects;
 import com.samkt.projectmanagement.models.DeleteResult;
 import com.samkt.projectmanagement.models.PostResult;
 import com.samkt.projectmanagement.models.UpdateResult;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -79,12 +76,12 @@ public class ProjectRepository {
 
     public MutableLiveData<DeleteResult> deleteProject(String id){
         MutableLiveData<DeleteResult> deleteProjectResult = new MutableLiveData<>();
-        apiService.deleteProject(id).enqueue(new Callback<DeleteProjectResponse>() {
+        apiService.deleteProject(id).enqueue(new Callback<DeleteResponse>() {
             @Override
-            public void onResponse(@NonNull Call<DeleteProjectResponse> call, @NonNull Response<DeleteProjectResponse> response) {
+            public void onResponse(@NonNull Call<DeleteResponse> call, @NonNull Response<DeleteResponse> response) {
                 if (response.isSuccessful() && response.body() != null){
-                    DeleteProjectResponse deleteProjectResponse = response.body();
-                    deleteProjectResult.postValue(new DeleteResult(deleteProjectResponse.getMessage(),null));
+                    DeleteResponse deleteResponse = response.body();
+                    deleteProjectResult.postValue(new DeleteResult(deleteResponse.getMessage(),null));
                 }
 
                 if (!response.isSuccessful()){
@@ -93,7 +90,7 @@ public class ProjectRepository {
             }
 
             @Override
-            public void onFailure(@NonNull Call<DeleteProjectResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<DeleteResponse> call, @NonNull Throwable t) {
                 deleteProjectResult.postValue(new DeleteResult(null,t.getMessage()));
             }
         });

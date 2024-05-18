@@ -7,7 +7,7 @@ import com.samkt.projectmanagement.data.model.request.SignUpRequest;
 import com.samkt.projectmanagement.data.model.response.AllProjectsResponse;
 import com.samkt.projectmanagement.data.model.response.CreateProjectResponse;
 import com.samkt.projectmanagement.data.model.response.CreateTaskResponse;
-import com.samkt.projectmanagement.data.model.response.DeleteProjectResponse;
+import com.samkt.projectmanagement.data.model.response.DeleteResponse;
 import com.samkt.projectmanagement.data.model.response.SignInResponse;
 import com.samkt.projectmanagement.data.model.response.SignUpResponse;
 import com.samkt.projectmanagement.data.model.response.TasksResponse;
@@ -35,7 +35,7 @@ public interface ProjectApiService {
     Call<AllProjectsResponse> getAllProject();
 
     @DELETE("projects/{id}")
-    Call<DeleteProjectResponse> deleteProject(@Path("id") String id);
+    Call<DeleteResponse> deleteProject(@Path("id") String id);
 
     @PUT("projects/{id}")
     Call<UpdateProjectResponse> updateProject(@Path("id") String id, @Body CreateProjectRequest createProjectRequest);
@@ -45,5 +45,8 @@ public interface ProjectApiService {
 
     @GET("project-tasks/{id}")
     Call<TasksResponse> getAllTask(@Path("id") String projectId);
+
+    @DELETE("project-tasks/{id}")
+    Call<DeleteResponse> deleteTask(@Path("id") String taskId);
 
 }

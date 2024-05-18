@@ -3,7 +3,7 @@ package com.samkt.projectmanagement.data.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class DeleteProjectResponse {
+public class DeleteResponse {
     @SerializedName("code")
     @Expose
     private Integer code;

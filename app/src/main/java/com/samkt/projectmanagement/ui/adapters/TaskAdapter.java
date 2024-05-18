@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.samkt.projectmanagement.R;
 import com.samkt.projectmanagement.data.model.response.Task;
+import com.samkt.projectmanagement.ui.adapters.listeners.TaskListener;
 import com.samkt.projectmanagement.utils.Utils;
 
 import java.util.List;
@@ -20,8 +21,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     private final List<Task> tasks;
 
-    public TaskAdapter(List<Task> tasks){
+    private TaskListener taskListener;
+
+    public TaskAdapter(List<Task> tasks,TaskListener taskListener){
         this.tasks = tasks;
+        this.taskListener = taskListener;
     }
 
 
@@ -43,7 +47,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        taskListener.onDeleteClicked(task.getUuid());
                     }
                 }
         );
