@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment implements ProjectsListeners {
 
     private EditText projectName,projectDescription;
     private ProgressBar pbSavingProject;
-    private Button btnSaveTask;
+    private Button btnSaveProject;
     private String name,description;
 
     @Override
@@ -102,12 +102,12 @@ public class HomeFragment extends Fragment implements ProjectsListeners {
     }
 
     private void restoreHomeUiState() {
-        btnSaveTask.setVisibility(View.VISIBLE);
+        btnSaveProject.setVisibility(View.VISIBLE);
         pbSavingProject.setVisibility(View.GONE);
     }
 
     private void savingProject(){
-        btnSaveTask.setVisibility(View.GONE);
+        btnSaveProject.setVisibility(View.GONE);
         pbSavingProject.setVisibility(View.VISIBLE);
     }
 
@@ -115,13 +115,13 @@ public class HomeFragment extends Fragment implements ProjectsListeners {
         dialog = new BottomSheetDialog(requireContext());
         if (!dialog.isShowing()){
             dialog.setContentView(R.layout.add_project_dialog);
-            btnSaveTask = dialog.findViewById(R.id.btnAddProject);
+            btnSaveProject = dialog.findViewById(R.id.btnAddProject);
             projectName = dialog.findViewById(R.id.etProjectName);
             pbSavingProject = dialog.findViewById(R.id.pbSavingProject);
             projectDescription = dialog.findViewById(R.id.etProjectDescription);
 
-            if (btnSaveTask != null && projectName != null && projectDescription != null && pbSavingProject != null){
-                btnSaveTask.setOnClickListener(
+            if (btnSaveProject != null && projectName != null && projectDescription != null && pbSavingProject != null){
+                btnSaveProject.setOnClickListener(
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -177,16 +177,16 @@ public class HomeFragment extends Fragment implements ProjectsListeners {
         dialog = new BottomSheetDialog(requireContext());
         if (!dialog.isShowing()){
             dialog.setContentView(R.layout.add_project_dialog);
-            btnSaveTask = dialog.findViewById(R.id.btnAddProject);
+            btnSaveProject = dialog.findViewById(R.id.btnAddProject);
             projectName = dialog.findViewById(R.id.etProjectName);
             pbSavingProject = dialog.findViewById(R.id.pbSavingProject);
             projectDescription = dialog.findViewById(R.id.etProjectDescription);
 
-            if (btnSaveTask != null && projectName != null && projectDescription != null && pbSavingProject != null){
+            if (btnSaveProject != null && projectName != null && projectDescription != null && pbSavingProject != null){
                 projectName.setText(name);
                 projectDescription.setText(description);
-                btnSaveTask.setText("UPDATE PROJECT");
-                btnSaveTask.setOnClickListener(
+                btnSaveProject.setText("UPDATE PROJECT");
+                btnSaveProject.setOnClickListener(
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

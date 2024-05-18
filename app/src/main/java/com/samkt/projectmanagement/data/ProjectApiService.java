@@ -1,13 +1,16 @@
 package com.samkt.projectmanagement.data;
 
 import com.samkt.projectmanagement.data.model.request.CreateProjectRequest;
+import com.samkt.projectmanagement.data.model.request.CreateTaskRequest;
 import com.samkt.projectmanagement.data.model.request.SignInRequest;
 import com.samkt.projectmanagement.data.model.request.SignUpRequest;
 import com.samkt.projectmanagement.data.model.response.AllProjectsResponse;
 import com.samkt.projectmanagement.data.model.response.CreateProjectResponse;
+import com.samkt.projectmanagement.data.model.response.CreateTaskResponse;
 import com.samkt.projectmanagement.data.model.response.DeleteProjectResponse;
 import com.samkt.projectmanagement.data.model.response.SignInResponse;
 import com.samkt.projectmanagement.data.model.response.SignUpResponse;
+import com.samkt.projectmanagement.data.model.response.TasksResponse;
 import com.samkt.projectmanagement.data.model.response.UpdateProjectResponse;
 
 import retrofit2.Call;
@@ -36,5 +39,11 @@ public interface ProjectApiService {
 
     @PUT("projects/{id}")
     Call<UpdateProjectResponse> updateProject(@Path("id") String id, @Body CreateProjectRequest createProjectRequest);
+
+    @POST("project-tasks")
+    Call<CreateTaskResponse> createTask(@Body CreateTaskRequest createTaskRequest);
+
+    @GET("project-tasks/{id}")
+    Call<TasksResponse> getAllTask(@Path("id") String projectId);
 
 }
