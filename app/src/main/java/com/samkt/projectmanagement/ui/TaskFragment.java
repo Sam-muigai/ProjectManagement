@@ -1,5 +1,6 @@
 package com.samkt.projectmanagement.ui;
 
+import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -14,11 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.samkt.projectmanagement.MainActivity;
 import com.samkt.projectmanagement.R;
 import com.samkt.projectmanagement.data.ApiServiceInstance;
 import com.samkt.projectmanagement.data.model.response.Task;
@@ -30,6 +34,7 @@ import com.samkt.projectmanagement.ui.adapters.listeners.TaskListener;
 import com.samkt.projectmanagement.ui.viewModels.TaskViewModel;
 import com.samkt.projectmanagement.ui.viewModels.factory.TaskViewModelFactory;
 
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -38,9 +43,10 @@ public class TaskFragment extends Fragment implements TaskListener {
     private FragmentTaskBinding binding;
     private String projectId, projectName, taskName, taskDeadline;
     private BottomSheetDialog dialog;
-    private EditText etTaskName, etTaskDeadline;
+    private EditText etTaskName;
+    private TextView tvDeadline;
     private ProgressBar pbSavingTask;
-    private Button btnSaveTask;
+    private Button btnSaveTask,btnDatePicker;
     private TaskViewModel taskViewModel;
 
     @Override
@@ -92,9 +98,10 @@ public class TaskFragment extends Fragment implements TaskListener {
             btnSaveTask = dialog.findViewById(R.id.btnAddTask);
             etTaskName = dialog.findViewById(R.id.etTaskName);
             pbSavingTask = dialog.findViewById(R.id.pbSavingTask);
-            etTaskDeadline = dialog.findViewById(R.id.etDeadlin);
+            tvDeadline = dialog.findViewById(R.id.tvDeadline);
+            btnDatePicker = dialog.findViewById(R.id.btnDeadline);
 
-            if (btnSaveTask != null && etTaskName != null && etTaskDeadline != null && pbSavingTask != null) {
+            if (btnSaveTask != null && etTaskName != null && tvDeadline != null && pbSavingTask != null) {
                 btnSaveTask.setOnClickListener(
                         new View.OnClickListener() {
                             @Override
@@ -105,11 +112,36 @@ public class TaskFragment extends Fragment implements TaskListener {
                                 }
                                 savingTask();
                                 taskName = etTaskName.getText().toString();
-                                taskDeadline = etTaskDeadline.getText().toString();
+                                taskDeadline = tvDeadline.getText().toString();
                                 saveTask(taskName, taskDeadline);
                             }
                         }
                 );
+
+                btnDatePicker.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Calendar c = Calendar.getInstance();
+                        int year = c.get(Calendar.YEAR);
+                        int month = c.get(Calendar.MONTH);
+                        int day = c.get(Calendar.DAY_OF_MONTH);
+
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(
+
+                                requireContext(),
+                                new DatePickerDialog.OnDateSetListener() {
+                                    @Override
+                                    public void onDateSet(DatePicker view, int year,
+                                                          int monthOfYear, int dayOfMonth) {
+                                        String formattedDate = String.format("%04d-%02d-%02d", year,monthOfYear + 1,dayOfMonth);
+                                        tvDeadline.setText(formattedDate);
+
+                                    }
+                                },
+                                year, month, day);
+                        datePickerDialog.show();
+                    }
+                });
             }
             dialog.show();
         }
@@ -121,11 +153,12 @@ public class TaskFragment extends Fragment implements TaskListener {
             btnSaveTask = dialog.findViewById(R.id.btnAddTask);
             etTaskName = dialog.findViewById(R.id.etTaskName);
             pbSavingTask = dialog.findViewById(R.id.pbSavingTask);
-            etTaskDeadline = dialog.findViewById(R.id.etDeadlin);
+            tvDeadline = dialog.findViewById(R.id.tvDeadline);
+            btnDatePicker = dialog.findViewById(R.id.btnDeadline);
 
-            if (btnSaveTask != null && etTaskName != null && etTaskDeadline != null && pbSavingTask != null) {
+            if (btnSaveTask != null && etTaskName != null && tvDeadline != null && pbSavingTask != null) {
                 etTaskName.setText(name);
-                etTaskDeadline.setText(deadline);
+                tvDeadline.setText(deadline);
                 btnSaveTask.setText("UPDATE TASK");
                 btnSaveTask.setOnClickListener(
                         new View.OnClickListener() {
@@ -137,11 +170,38 @@ public class TaskFragment extends Fragment implements TaskListener {
                                 }
                                 savingTask();
                                 String taskName = etTaskName.getText().toString();
-                                String taskDeadline =etTaskDeadline.getText().toString();
+                                String taskDeadline =tvDeadline.getText().toString();
                                 updateTask(id,taskName,taskDeadline);
                             }
                         }
                 );
+
+                btnDatePicker.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Calendar c = Calendar.getInstance();
+                        int year = c.get(Calendar.YEAR);
+                        int month = c.get(Calendar.MONTH);
+                        int day = c.get(Calendar.DAY_OF_MONTH);
+
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(
+
+                                requireContext(),
+                                new DatePickerDialog.OnDateSetListener() {
+                                    @Override
+                                    public void onDateSet(DatePicker view, int year,
+                                                          int monthOfYear, int dayOfMonth) {
+                                        String formattedDate = String.format("%04d-%02d-%02d", year,monthOfYear + 1,dayOfMonth);
+                                        tvDeadline.setText(formattedDate);
+
+                                    }
+                                },
+                                year, month, day);
+                        datePickerDialog.show();
+                    }
+                });
+
+
             }
             dialog.show();
         }
@@ -213,7 +273,7 @@ public class TaskFragment extends Fragment implements TaskListener {
     }
 
     private boolean isAllFieldFilled() {
-        return !etTaskName.getText().toString().isEmpty() && !etTaskDeadline.getText().toString().isEmpty();
+        return !etTaskName.getText().toString().isEmpty() && !tvDeadline.getText().toString().isEmpty();
     }
 
     @Override
