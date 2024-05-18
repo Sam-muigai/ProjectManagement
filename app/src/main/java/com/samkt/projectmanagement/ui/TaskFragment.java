@@ -37,6 +37,8 @@ import com.samkt.projectmanagement.ui.viewModels.factory.TaskViewModelFactory;
 import java.util.Calendar;
 import java.util.List;
 
+import timber.log.Timber;
+
 
 public class TaskFragment extends Fragment implements TaskListener {
 
@@ -46,8 +48,9 @@ public class TaskFragment extends Fragment implements TaskListener {
     private EditText etTaskName;
     private TextView tvDeadline;
     private ProgressBar pbSavingTask;
-    private Button btnSaveTask,btnDatePicker;
+    private Button btnSaveTask, btnDatePicker;
     private TaskViewModel taskViewModel;
+    private List<Task> userTasks;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,7 @@ public class TaskFragment extends Fragment implements TaskListener {
         ApiServiceInstance apiServiceInstance = new ApiServiceInstance(projectPreferences);
 
         TaskViewModelFactory taskViewModelFactory = new TaskViewModelFactory(new TaskRepository(apiServiceInstance.getApiServices(true)));
-        taskViewModel = new ViewModelProvider(this,taskViewModelFactory).get(TaskViewModel.class);
+        taskViewModel = new ViewModelProvider(this, taskViewModelFactory).get(TaskViewModel.class);
     }
 
     @Override
@@ -83,11 +86,11 @@ public class TaskFragment extends Fragment implements TaskListener {
 
         binding.fabAdd.setOnClickListener(
                 new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                showAddProjectDialog();
-                            }
-                        }
+                    @Override
+                    public void onClick(View v) {
+                        showAddProjectDialog();
+                    }
+                }
         );
     }
 
@@ -133,7 +136,7 @@ public class TaskFragment extends Fragment implements TaskListener {
                                     @Override
                                     public void onDateSet(DatePicker view, int year,
                                                           int monthOfYear, int dayOfMonth) {
-                                        String formattedDate = String.format("%04d-%02d-%02d", year,monthOfYear + 1,dayOfMonth);
+                                        String formattedDate = String.format("%04d-%02d-%02d", year, monthOfYear + 1, dayOfMonth);
                                         tvDeadline.setText(formattedDate);
 
                                     }
@@ -146,9 +149,10 @@ public class TaskFragment extends Fragment implements TaskListener {
             dialog.show();
         }
     }
+
     private void showEditProjectDialog(String id, String name, String deadline) {
         dialog = new BottomSheetDialog(requireContext());
-        if (!dialog.isShowing()){
+        if (!dialog.isShowing()) {
             dialog.setContentView(R.layout.add_task_dialog);
             btnSaveTask = dialog.findViewById(R.id.btnAddTask);
             etTaskName = dialog.findViewById(R.id.etTaskName);
@@ -164,14 +168,14 @@ public class TaskFragment extends Fragment implements TaskListener {
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (!isAllFieldFilled()){
-                                    Toast.makeText(requireContext(),"All fields must be filled",Toast.LENGTH_LONG).show();
+                                if (!isAllFieldFilled()) {
+                                    Toast.makeText(requireContext(), "All fields must be filled", Toast.LENGTH_LONG).show();
                                     return;
                                 }
                                 savingTask();
                                 String taskName = etTaskName.getText().toString();
-                                String taskDeadline =tvDeadline.getText().toString();
-                                updateTask(id,taskName,taskDeadline);
+                                String taskDeadline = tvDeadline.getText().toString();
+                                updateTask(id, taskName, taskDeadline);
                             }
                         }
                 );
@@ -191,7 +195,7 @@ public class TaskFragment extends Fragment implements TaskListener {
                                     @Override
                                     public void onDateSet(DatePicker view, int year,
                                                           int monthOfYear, int dayOfMonth) {
-                                        String formattedDate = String.format("%04d-%02d-%02d", year,monthOfYear + 1,dayOfMonth);
+                                        String formattedDate = String.format("%04d-%02d-%02d", year, monthOfYear + 1, dayOfMonth);
                                         tvDeadline.setText(formattedDate);
 
                                     }
@@ -208,7 +212,7 @@ public class TaskFragment extends Fragment implements TaskListener {
     }
 
     private void updateTask(String id, String taskName, String taskDeadline) {
-        taskViewModel.updateTask(id, taskName, taskDeadline).observe(getViewLifecycleOwner(),updateResult -> {
+        taskViewModel.updateTask(id, taskName, taskDeadline).observe(getViewLifecycleOwner(), updateResult -> {
             if (updateResult.getErrorMessage() != null) {
                 restoreHomeUiState();
                 Toast.makeText(requireContext(), updateResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
@@ -252,14 +256,13 @@ public class TaskFragment extends Fragment implements TaskListener {
     }
 
 
-
     private void getTasks() {
-        taskViewModel.getTask(projectId).observe(getViewLifecycleOwner(),allTasks ->{
-            if (allTasks.getErrorMessage() != null){
-                Toast.makeText(requireContext(),allTasks.getErrorMessage(),Toast.LENGTH_SHORT).show();
+        taskViewModel.getTask(projectId).observe(getViewLifecycleOwner(), allTasks -> {
+            if (allTasks.getErrorMessage() != null) {
+                Toast.makeText(requireContext(), allTasks.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (allTasks.getTasks() != null){
+            if (allTasks.getTasks() != null) {
                 displayTasks(allTasks.getTasks());
             }
         });
@@ -267,9 +270,11 @@ public class TaskFragment extends Fragment implements TaskListener {
 
     void displayTasks(
             List<Task> tasks
-    ){
-        TaskAdapter taskAdapter = new TaskAdapter(tasks,this);
+    ) {
+        userTasks = tasks;
+        TaskAdapter taskAdapter = new TaskAdapter(tasks, this);
         binding.rvTasks.setAdapter(taskAdapter);
+        binding.rvTasks.setVisibility(View.VISIBLE);
     }
 
     private boolean isAllFieldFilled() {
@@ -278,20 +283,23 @@ public class TaskFragment extends Fragment implements TaskListener {
 
     @Override
     public void onDeleteClicked(String id) {
-        taskViewModel.deleteTask(id).observe(getViewLifecycleOwner(),deleteResult -> {
-            if (deleteResult.getErrorMessage() != null){
-                Toast.makeText(requireContext(),deleteResult.getErrorMessage(),Toast.LENGTH_SHORT).show();
+        taskViewModel.deleteTask(id).observe(getViewLifecycleOwner(), deleteResult -> {
+            if (deleteResult.getErrorMessage() != null) {
+                Toast.makeText(requireContext(), deleteResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (deleteResult.getSuccessMessage() != null){
-                Toast.makeText(requireContext(),deleteResult.getSuccessMessage(),Toast.LENGTH_SHORT).show();
+            if (deleteResult.getSuccessMessage() != null) {
+                Toast.makeText(requireContext(), deleteResult.getSuccessMessage(), Toast.LENGTH_SHORT).show();
                 getTasks();
+                if (userTasks.size() == 1){
+                    binding.rvTasks.setVisibility(View.GONE);
+                }
             }
         });
     }
 
     @Override
     public void onEditClicked(String id, String taskName, String taskDeadline) {
-        showEditProjectDialog(id,taskName,taskDeadline);
+        showEditProjectDialog(id, taskName, taskDeadline);
     }
 }
