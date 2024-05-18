@@ -71,11 +71,11 @@ public class SignUpFragment extends Fragment {
                             return;
                         }
                         // TODO: 5/17/2024 Sign Up User
-                        userName = Objects.requireNonNull(binding.etUsername.getText()).toString();
-                        phoneNumber = Objects.requireNonNull(binding.etPhoneNumber.getText()).toString();
-                        email = Objects.requireNonNull(binding.etEmail.getText()).toString();
-                        password = Objects.requireNonNull(binding.etPassword.getText()).toString();
-                        confirmPassword = Objects.requireNonNull(binding.etConfirmPassword.getText()).toString();
+                        userName = Objects.requireNonNull(binding.etUsername.getText()).toString().trim();
+                        phoneNumber = Objects.requireNonNull(binding.etPhoneNumber.getText()).toString().trim();
+                        email = Objects.requireNonNull(binding.etEmail.getText()).toString().trim();
+                        password = Objects.requireNonNull(binding.etPassword.getText()).toString().trim();
+                        confirmPassword = Objects.requireNonNull(binding.etConfirmPassword.getText()).toString().trim();
                         signUpLoading();
                         Timber.d("SignUser fragment");
                          signUpUser(

@@ -63,8 +63,8 @@ public class SignInFragment extends Fragment {
                     Toast.makeText(requireContext(),"All fields must be filled",Toast.LENGTH_LONG).show();
                     return;
                 }
-                emailOrPassword = Objects.requireNonNull(binding.etUsernameOrEmail.getText()).toString();
-                password = Objects.requireNonNull(binding.etPassword.getText()).toString();
+                emailOrPassword = Objects.requireNonNull(binding.etUsernameOrEmail.getText()).toString().trim();
+                password = Objects.requireNonNull(binding.etPassword.getText()).toString().trim();
                 startSignIn();
                 signInUser(emailOrPassword,password);
             }
