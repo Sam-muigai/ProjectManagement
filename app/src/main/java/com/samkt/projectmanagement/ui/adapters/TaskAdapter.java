@@ -56,7 +56,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        taskListener.onEditClicked(task.getUuid(),task.getName(),Utils.extractDate(task.getDeadline()));
                     }
                 }
         );

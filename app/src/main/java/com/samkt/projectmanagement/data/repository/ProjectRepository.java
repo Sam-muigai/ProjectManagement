@@ -8,7 +8,7 @@ import com.samkt.projectmanagement.data.model.request.CreateProjectRequest;
 import com.samkt.projectmanagement.data.model.response.AllProjectsResponse;
 import com.samkt.projectmanagement.data.model.response.CreateProjectResponse;
 import com.samkt.projectmanagement.data.model.response.DeleteResponse;
-import com.samkt.projectmanagement.data.model.response.UpdateProjectResponse;
+import com.samkt.projectmanagement.data.model.response.UpdateResponse;
 import com.samkt.projectmanagement.models.AllProjects;
 import com.samkt.projectmanagement.models.DeleteResult;
 import com.samkt.projectmanagement.models.PostResult;
@@ -102,12 +102,12 @@ public class ProjectRepository {
     public MutableLiveData<UpdateResult> updateProject(String id,CreateProjectRequest createProjectRequest){
         MutableLiveData<UpdateResult> updateResult = new MutableLiveData<>();
         apiService.updateProject(id,createProjectRequest).enqueue(
-                new Callback<UpdateProjectResponse>() {
+                new Callback<UpdateResponse>() {
                     @Override
-                    public void onResponse(@NonNull Call<UpdateProjectResponse> call, @NonNull Response<UpdateProjectResponse> response) {
+                    public void onResponse(@NonNull Call<UpdateResponse> call, @NonNull Response<UpdateResponse> response) {
                         if (response.isSuccessful() && response.body() != null){
-                            UpdateProjectResponse updateProjectResponse = response.body();
-                            updateResult.postValue(new UpdateResult(updateProjectResponse.getMessage(),null));
+                            UpdateResponse updateResponse = response.body();
+                            updateResult.postValue(new UpdateResult(updateResponse.getMessage(),null));
                         }
 
                         if (!response.isSuccessful()){
@@ -116,7 +116,7 @@ public class ProjectRepository {
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<UpdateProjectResponse> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<UpdateResponse> call, @NonNull Throwable t) {
                         updateResult.postValue(new UpdateResult(null,t.getMessage()));
                     }
                 }

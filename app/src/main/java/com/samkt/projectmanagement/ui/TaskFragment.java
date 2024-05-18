@@ -114,6 +114,55 @@ public class TaskFragment extends Fragment implements TaskListener {
             dialog.show();
         }
     }
+    private void showEditProjectDialog(String id, String name, String deadline) {
+        dialog = new BottomSheetDialog(requireContext());
+        if (!dialog.isShowing()){
+            dialog.setContentView(R.layout.add_task_dialog);
+            btnSaveTask = dialog.findViewById(R.id.btnAddTask);
+            etTaskName = dialog.findViewById(R.id.etTaskName);
+            pbSavingTask = dialog.findViewById(R.id.pbSavingTask);
+            etTaskDeadline = dialog.findViewById(R.id.etDeadlin);
+
+            if (btnSaveTask != null && etTaskName != null && etTaskDeadline != null && pbSavingTask != null) {
+                etTaskName.setText(name);
+                etTaskDeadline.setText(deadline);
+                btnSaveTask.setText("UPDATE TASK");
+                btnSaveTask.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (!isAllFieldFilled()){
+                                    Toast.makeText(requireContext(),"All fields must be filled",Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                                savingTask();
+                                String taskName = etTaskName.getText().toString();
+                                String taskDeadline =etTaskDeadline.getText().toString();
+                                updateTask(id,taskName,taskDeadline);
+                            }
+                        }
+                );
+            }
+            dialog.show();
+        }
+    }
+
+    private void updateTask(String id, String taskName, String taskDeadline) {
+        taskViewModel.updateTask(id, taskName, taskDeadline).observe(getViewLifecycleOwner(),updateResult -> {
+            if (updateResult.getErrorMessage() != null) {
+                restoreHomeUiState();
+                Toast.makeText(requireContext(), updateResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (updateResult.getSuccessMessage() != null) {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                Toast.makeText(requireContext(), updateResult.getSuccessMessage(), Toast.LENGTH_SHORT).show();
+                getTasks();
+            }
+        });
+    }
 
     private void savingTask() {
         btnSaveTask.setVisibility(View.GONE);
@@ -142,15 +191,15 @@ public class TaskFragment extends Fragment implements TaskListener {
         });
     }
 
+
+
     private void getTasks() {
         taskViewModel.getTask(projectId).observe(getViewLifecycleOwner(),allTasks ->{
             if (allTasks.getErrorMessage() != null){
                 Toast.makeText(requireContext(),allTasks.getErrorMessage(),Toast.LENGTH_SHORT).show();
                 return;
             }
-
             if (allTasks.getTasks() != null){
-                Toast.makeText(requireContext(),"Task Retrieved",Toast.LENGTH_SHORT).show();
                 displayTasks(allTasks.getTasks());
             }
         });
@@ -179,5 +228,10 @@ public class TaskFragment extends Fragment implements TaskListener {
                 getTasks();
             }
         });
+    }
+
+    @Override
+    public void onEditClicked(String id, String taskName, String taskDeadline) {
+        showEditProjectDialog(id,taskName,taskDeadline);
     }
 }
