@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -234,5 +235,16 @@ public class HomeFragment extends Fragment implements ProjectsListeners {
                 getProjects();
             }
         });
+    }
+
+    @Override
+    public void onProjectClicked(String id, String name) {
+        Bundle bundle = new Bundle();
+        bundle.putString("id",id);
+        bundle.putString("name",name);
+        NavHostFragment.findNavController(HomeFragment.this).navigate(
+                R.id.action_homeFragment_to_taskFragment,
+                bundle
+        );
     }
 }

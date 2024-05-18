@@ -65,7 +65,7 @@ public class SplashFragment extends Fragment {
 
     void navigateHome() {
         NavOptions navOptions = new NavOptions.Builder()
-                .setPopUpTo(R.id.homeFragment, true)
+                .setPopUpTo(R.id.splashFragment, true)
                 .build();
         NavHostFragment.findNavController(this).navigate(
                 R.id.action_splashFragment_to_homeFragment,
@@ -76,7 +76,7 @@ public class SplashFragment extends Fragment {
 
     void navigateLogin() {
         NavOptions navOptions = new NavOptions.Builder()
-                .setPopUpTo(R.id.homeFragment, true)
+                .setPopUpTo(R.id.splashFragment, true)
                 .build();
         NavHostFragment.findNavController(this).navigate(
                 R.id.action_splashFragment_to_signInFragment,

@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.samkt.projectmanagement.R;
@@ -54,6 +55,14 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
                     }
                 }
         );
+        holder.project.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onProjectClicked(project.getUuid(),project.getName());
+                    }
+                }
+        );
     }
 
     @Override
@@ -65,11 +74,13 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
         TextView tvProjectName;
         ImageView deleteIcon;
         ImageView editIcon;
+        CardView project;
         public ProjectViewHolder(@NonNull View itemView) {
             super(itemView);
             tvProjectName = itemView.findViewById(R.id.tvProjectName);
             deleteIcon = itemView.findViewById(R.id.icDelete);
             editIcon = itemView.findViewById(R.id.icEdit);
+            project = itemView.findViewById(R.id.cvProject);
         }
     }
 }
