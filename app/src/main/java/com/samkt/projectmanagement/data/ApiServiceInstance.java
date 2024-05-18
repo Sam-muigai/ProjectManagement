@@ -27,8 +27,14 @@ public class ApiServiceInstance {
             @NonNull
             @Override
             public Response intercept(Chain chain) throws IOException {
+                String token;
+                if( projectPreferences.getUserToken() == null){
+                    token = "";
+                }else {
+                    token = projectPreferences.getUserToken().trim();
+                }
                 Request request = chain.request().newBuilder()
-                        .addHeader("Authorization", "Bearer " + projectPreferences.getUserToken().trim())
+                        .addHeader("Authorization", "Bearer " + token)
                         .build();
                 return chain.proceed(request);
             }

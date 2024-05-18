@@ -240,6 +240,7 @@ public class HomeFragment extends Fragment implements ProjectsListeners {
             if (deleteResult.getSuccessMessage() != null) {
                 Toast.makeText(requireContext(), deleteResult.getSuccessMessage(), Toast.LENGTH_LONG).show();
                 getProjects();
+
                 if (userProjects.size() == 1) {
                     binding.rvProjects.setVisibility(View.GONE);
                 }
